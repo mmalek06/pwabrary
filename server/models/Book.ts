@@ -3,7 +3,7 @@ import { Author } from './Author';
 interface _Book {
     isbn: string;
     title: string;
-    authors: Array<Author>;
+    authors: Author[];
     stock: BigInt;
 }
 
