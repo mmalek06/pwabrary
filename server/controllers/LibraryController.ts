@@ -4,7 +4,7 @@ import { Book } from '../models/Book';
 
 import { IBookRepository } from '../infrastructure/IBookRepository';
 
-export default class LibraryController {
+export class LibraryController {
     constructor(private bookRepo: IBookRepository) {}
 
     listAuthorBooks(req: Request, res: Response, maybeAuthorName: string): void {
