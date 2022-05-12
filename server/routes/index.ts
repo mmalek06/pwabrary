@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-const router = Router();
+import { router as libraryRouter } from './library';
 
-router.use('/api', require('./api'));
+export const router = Router();
 
-module.exports = router;
+router.use('/library', libraryRouter);

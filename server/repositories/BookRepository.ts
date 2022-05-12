@@ -5,14 +5,14 @@ export class BookRepository implements IBookRepository {
     constructor(
         private bookSearchSensitivity: number,
         private authorSearchSensitivity: number,
-        private books: Array<Book>) {}
+        private books: Book[]) {}
 
-    getAllBooks(): Array<Book> {
+    getAllBooks(): Book[] {
         return this.books;
     }
 
-    findBook(maybeTitle: string): Array<Book> {
-        const candidates: Array<Book> = []
+    findBook(maybeTitle: string): Book[] {
+        const candidates: Book[] = []
 
         for (const book of this.books) {
             const distance = this.levDist(book.title.toLowerCase(), maybeTitle.toLowerCase());
@@ -26,8 +26,8 @@ export class BookRepository implements IBookRepository {
         return candidates;
     }
 
-    findAuthorsBooks(maybeAuthorName: string): Array<Book> {
-        const foundBooks: Array<Book> = [];
+    findAuthorsBooks(maybeAuthorName: string): Book[] {
+        const foundBooks: Book[] = [];
 
         for (const book of this.books) {
             for (const author of book.authors) {
@@ -46,21 +46,27 @@ export class BookRepository implements IBookRepository {
     }
 
     private levDist(a: string, b: string): number {
-        const minDist = (s1: number, s2: number): number => {
-            if (s1 == a.length || s2 == b.length)
-                return a.length - s1 + b.length - s2;
+        const c = a.length + 1;
+        const d = b.length + 1;
+        const r = Array(c);
 
-            // no change required
-            if (a[s1] == b[s2])
-                return minDist(s1 + 1, s2 + 1);
+        for (let i = 0; i < c; ++i) 
+            r[i] = Array(d);
+      
+        for (let i = 0; i < c; ++i) 
+            r[i][0] = i;
+      
+        for (let j = 0; j < d; ++j) 
+            r[0][j] = j;
 
-            return 1 + Math.min(
-                minDist(s1, s2 + 1), // insert character
-                minDist(s1 + 1, s2), // delete character
-                minDist(s1 + 1, s2 + 1), // replace character
-            );
-        };
-
-        return minDist(0, 0);
+        for (let i = 1; i < c; ++i) {
+            for (let j = 1; j < d; ++j) {
+                const s = (a[i - 1] === b[j - 1] ? 0 : 1);
+                
+                r[i][j] = Math.min(r[i - 1][j] + 1, r[i][j - 1] + 1, r[i - 1][j - 1] + s);
+            }
+        }
+        
+        return r[a.length][b.length];
     }
 }

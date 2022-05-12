@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { Book } from '../models/Book';
 
-import { IBookRepository } from '../infrastructure/IBookRepository';
+import { IBookRepository } from '../repositories/IBookRepository';
 
 export class LibraryController {
     constructor(private bookRepo: IBookRepository) {}
@@ -30,7 +30,9 @@ export class LibraryController {
 
     }
 
-    // listStock(): Array<[Book, number]> {
+    listStock(req: Request, res: Response): void {
+        const books = this.bookRepo.getAllBooks();
 
-    // }
+        res.status(200).json(books);
+    }
 }
