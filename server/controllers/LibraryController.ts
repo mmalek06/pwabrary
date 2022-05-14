@@ -1,38 +1,88 @@
 import { Request, Response } from 'express';
 
-import { Book } from '../models/Book';
-
-import { IBookRepository } from '../repositories/IBookRepository';
+import { IBookService } from '../services/IBookService';
+import { ErrorCodes } from './ErrorCodes';
 
 export class LibraryController {
-    constructor(private bookRepo: IBookRepository) {}
+    constructor(
+        private _bookService: IBookService,
+        private _req: Request,
+        private _res: Response) {}
 
-    listAuthorBooks(req: Request, res: Response, maybeAuthorName: string): void {
-        const books = this.bookRepo.findAuthorsBooks(maybeAuthorName);
+    listAuthorBooks(authorName: string): void {
+        if (authorName === '')
+            this._res
+                .status(400)
+                .json({
+                    error: ErrorCodes.PARAMETER_EMPTY,
+                    parameter: 'author-name'
+                });
+        else {
+            const books = this._bookService.findAuthorsBooks(authorName);
 
-        res.status(200).json(books);
+            this._res.status(200).json(books);
+        }
     }
 
-    findBook(req: Request, res: Response, maybeTitle: string): void {
-        const books = this.bookRepo.findBook(maybeTitle);
+    findBook(bookTitle: string): void {
+        if (bookTitle === '') 
+            this._res
+                .status(400)
+                .json({
+                    error: ErrorCodes.PARAMETER_EMPTY,
+                    parameter: 'book-title'
+                });
+        else {
+            const books = this._bookService.findBook(bookTitle);
 
-        if (books.length > 0)
-            res.status(200).json(books);
-        else
-            res.status(404);
+            if (books.length > 0)
+                this._res.status(200).json(books);
+            else
+                this._res
+                    .status(404)
+                    .json({
+                        error: ErrorCodes.OBJECT_NOT_EXISTING
+                    });
+        }
     }
 
-    borrowBook(): void {
+    borrowBook(isbn: string, userName: string): void {
+        if (isbn === '')
+            this._res
+                .status(400)
+                .json({
+                    error: ErrorCodes.PARAMETER_EMPTY,
+                    parameter: 'isbn'
+                });
+        else if (userName === '')
+            this._res
+                .status(400)
+                .json({
+                    error: ErrorCodes.PARAMETER_EMPTY,
+                    parameter: 'user-name'
+                });
+        else {
+            const book = this._bookService.findBook(isbn);
 
+            if (book === undefined) 
+                this._res
+                    .status(404)
+                    .json({
+                        error: ErrorCodes.OBJECT_NOT_EXISTING
+                    });
+            else {
+                
+            }
+        }
     }
 
     returnBook(): void {
 
     }
 
-    listStock(req: Request, res: Response): void {
-        const books = this.bookRepo.getAllBooks();
+    listStock(): void {
+        const books = this._bookService.getAllBooks();
 
-        res.status(200).json(books);
+        this._res.status(200).json(books);
     }
 }
