@@ -1,7 +1,7 @@
-import { Book } from '../models/Book';
-import { ErrorCodes } from './errorCodes';
+import Book from '../models/Book';
+import { ErrorCodes } from './ErrorCodes';
 
-export interface IBookService {
+export default interface IBookService {
     getAllBooks(): Book[];
     findBook(maybeTitle: string): Book[];
     findAuthorsBooks(maybeAuthorName: string): Book[];

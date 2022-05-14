@@ -1,6 +1,6 @@
-import { Book } from '../models/Book';
-import { ErrorCodes } from './errorCodes';
-import { IBookService } from './IBookService';
+import Book from '../models/Book';
+import { ErrorCodes } from './ErrorCodes';
+import IBookService from './IBookService';
 
 export class BookService implements IBookService {
     private _borrowedBooks: Map<string, string[]>;

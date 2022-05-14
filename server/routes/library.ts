@@ -23,6 +23,6 @@ readLibrary(libfile, (books) => {
         '/list-stock',
         (req, res) => new LibraryController(bookService, req, res).listStock());
     router.post(
-        '/borror-book',
+        '/borrow-book',
         (req, res) => new LibraryController(bookService, req, res).borrowBook((req.query['isbn'] as string) || '', (req.query['user-name'] as string) || ''));
 });

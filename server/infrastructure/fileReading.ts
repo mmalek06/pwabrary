@@ -1,8 +1,8 @@
 import { parse } from 'csv-parse';
 import fs from 'fs';
 
-import { Author } from '../models/Author';
-import { Book } from '../models/Book';
+import Author from '../models/Author';
+import Book from '../models/Book';
 
 export const readLibrary = (filePath: string, onReadFinished: (books: Array<Book>) => void): void => {
     const result: Array<Book> = [];

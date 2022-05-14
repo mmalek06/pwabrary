@@ -10,5 +10,5 @@ const port = process.env.PORT;
 
 app.use('/api', appRouter);
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
+    console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
 });

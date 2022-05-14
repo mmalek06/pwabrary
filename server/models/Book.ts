@@ -1,4 +1,4 @@
-import { Author } from './Author';
+import Author from './Author';
 
 interface _Book {
     isbn: string;
@@ -9,4 +9,4 @@ interface _Book {
 
 type Book = Required<_Book>;
 
-export { Book };
+export default Book;

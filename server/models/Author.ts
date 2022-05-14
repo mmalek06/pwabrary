@@ -5,4 +5,4 @@ interface _Author {
 
 type Author = Required<_Author>;
 
-export { Author };
+export default Author;

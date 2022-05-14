@@ -1,22 +1,19 @@
 import { Request, Response } from 'express';
 
-import { IBookService } from '../services/IBookService';
-import { ErrorCodes } from './ErrorCodes';
+import IBookService from '../services/IBookService';
+import BaseController from './BaseController';
 
-export class LibraryController {
+export class LibraryController extends BaseController {
     constructor(
         private _bookService: IBookService,
-        private _req: Request,
-        private _res: Response) {}
+        req: Request,
+        res: Response) {
+        super(res, req);
+    }
 
     listAuthorBooks(authorName: string): void {
         if (authorName === '')
-            this._res
-                .status(400)
-                .json({
-                    error: ErrorCodes.PARAMETER_EMPTY,
-                    parameter: 'author-name'
-                });
+            this._parameterEmpty('author-name');
         else {
             const books = this._bookService.findAuthorsBooks(authorName);
 
@@ -26,57 +23,36 @@ export class LibraryController {
 
     findBook(bookTitle: string): void {
         if (bookTitle === '') 
-            this._res
-                .status(400)
-                .json({
-                    error: ErrorCodes.PARAMETER_EMPTY,
-                    parameter: 'book-title'
-                });
+            this._parameterEmpty('book-title');
         else {
             const books = this._bookService.findBook(bookTitle);
 
             if (books.length > 0)
                 this._res.status(200).json(books);
             else
-                this._res
-                    .status(404)
-                    .json({
-                        error: ErrorCodes.OBJECT_NOT_EXISTING
-                    });
+                this._objectNonExistent();
         }
     }
 
     borrowBook(isbn: string, userName: string): void {
         if (isbn === '')
-            this._res
-                .status(400)
-                .json({
-                    error: ErrorCodes.PARAMETER_EMPTY,
-                    parameter: 'isbn'
-                });
+            this._parameterEmpty('isbn');
         else if (userName === '')
-            this._res
-                .status(400)
-                .json({
-                    error: ErrorCodes.PARAMETER_EMPTY,
-                    parameter: 'user-name'
-                });
+            this._parameterEmpty('user-name');
         else {
-            const book = this._bookService.findBook(isbn);
+            const bookOrError = this._bookService.borrowBook(isbn, userName);
+            const type = typeof bookOrError as string;
 
-            if (book === undefined) 
+            if (type === 'ErrorCode')
+                this._objectNonExistent();
+            else
                 this._res
-                    .status(404)
-                    .json({
-                        error: ErrorCodes.OBJECT_NOT_EXISTING
-                    });
-            else {
-                
-            }
+                    .status(200)
+                    .json(bookOrError);
         }
     }
 
-    returnBook(): void {
+    returnBook(isbn: string, userName: string): void {
 
     }
 
