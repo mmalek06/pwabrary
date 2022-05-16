@@ -53,7 +53,23 @@ export class LibraryController extends BaseController {
     }
 
     returnBook(isbn: string, userName: string): void {
+        if (isbn === '')
+            this._parameterEmpty('isbn');
+        else if (userName === '')
+            this._parameterEmpty('user-name');
+        else {
+            const voidOrError = this._bookService.returnBook(isbn, userName);
+            const type = typeof voidOrError as string;
 
+            if (type !== 'ErrorCode')
+                this._res.status(200);
+            else
+                this._res
+                    .status(400)
+                    .json({
+                        error: voidOrError
+                    });
+        }
     }
 
     listStock(): void {

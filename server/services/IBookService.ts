@@ -6,4 +6,5 @@ export default interface IBookService {
     findBook(maybeTitle: string): Book[];
     findAuthorsBooks(maybeAuthorName: string): Book[];
     borrowBook(isbn: string, userName: string): Book | ErrorCodes;
+    returnBook(isbn: string, userName: string): void | ErrorCodes;
 }

@@ -65,6 +65,20 @@ export class BookService implements IBookService {
         return book
     }
 
+    returnBook(isbn: string, userName: string): void | ErrorCodes {
+        const book = this._books.find(b => b.isbn == isbn);
+
+        if (!this._borrowedBooks.has(isbn))
+            return ErrorCodes.BOOK_NOT_BORROWED;
+
+        const userIdx = this._borrowedBooks.get(isbn)!.findIndex(x => x == userName);
+
+        if (userIdx < 0)
+            return ErrorCodes.BOOK_NOT_BORROWED_BY_USER;
+
+        this._borrowedBooks.get(isbn)!.splice(userIdx, 1);
+    }
+
     private _levDist(a: string, b: string): number {
         const c = a.length + 1;
         const d = b.length + 1;

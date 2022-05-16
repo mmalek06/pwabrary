@@ -9,7 +9,7 @@ export default abstract class BaseController {
         this._res
             .status(400)
             .json({
-                error: ControllerErrorCodes.PARAMETER_EMPTY,
+                validationError: ControllerErrorCodes.PARAMETER_EMPTY,
                 parameter: paramName
             });
     }
@@ -18,7 +18,7 @@ export default abstract class BaseController {
         this._res
             .status(404)
             .json({
-                error: ControllerErrorCodes.OBJECT_NOT_EXISTING
+                validationError: ControllerErrorCodes.OBJECT_NOT_EXISTING
             });
     }
 }

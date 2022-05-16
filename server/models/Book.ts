@@ -1,12 +1,10 @@
 import Author from './Author';
 
-interface _Book {
+interface Book {
     isbn: string;
     title: string;
     authors: Author[];
     stock: number;
 }
-
-type Book = Required<_Book>;
 
 export default Book;

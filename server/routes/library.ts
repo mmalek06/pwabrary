@@ -25,4 +25,7 @@ readLibrary(libfile, (books) => {
     router.post(
         '/borrow-book',
         (req, res) => new LibraryController(bookService, req, res).borrowBook((req.query['isbn'] as string) || '', (req.query['user-name'] as string) || ''));
+    router.post(
+        '/return-book',
+        (req, res) => new LibraryController(bookService, req, res).returnBook((req.query['isbn'] as string) || '', (req.query['user-name'] as string) || ''));
 });
