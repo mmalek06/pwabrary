@@ -1,12 +1,11 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import BooksListView from '../views/BooksList.vue';
 
 const routes: Array<RouteRecordRaw> = [
-    {
-        path: '/',
-        name: 'books-list',
-        component: BooksListView
-    },
+    // {
+    //     path: '/',
+    //     name: 'books-list',
+    //     component: BooksListView
+    // },
     // {
     //   path: '/about',
     //   name: 'about',

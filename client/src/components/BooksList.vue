@@ -1,0 +1,101 @@
+<template>
+    <div class="book-list">
+        <transition name="fade">
+            <div class="lds-dual-ring" v-if="isLoading"></div>
+        </transition>
+        <transition name="fade">
+            <div v-if="!isLoading" class="book-list">
+                <ul>
+                    <li v-for="book in books" :key="book.isbn">
+                        <BookListElement :book="book" />
+                    </li>
+                </ul>
+            </div>
+        </transition>
+    </div>
+</template>
+
+<script lang="ts">
+
+import { defineComponent } from 'vue';
+import { AxiosKey } from '@/infrastructure/symbols';
+import injectStrict from '@/infrastructure/injection';
+import Book from '@/models/Book';
+import BookListElement from './BookListElement.vue';
+
+export default defineComponent({
+    name: 'BookList',
+    components: { BookListElement },
+    data() {
+        return {
+            books: [] as Book[],
+            isLoading: true
+        };
+    },
+    async mounted() {
+        const http = injectStrict(AxiosKey);
+        const response = await http.get<Book[]>('/library/list-stock');
+
+        this.isLoading = false;
+        this.books = response.data;
+    }
+});
+
+</script>
+
+<style scoped>
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.book-list {
+    max-width: 960px;
+    margin: 40px auto;
+}
+
+.book-list ul {
+    padding: 0
+}
+
+.book-list li {
+    list-style-type: none;
+    background: white;
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 4px;
+}
+
+.book-list h2 {
+    margin: 0 0 10px;
+    text-transform: capitalize;
+}
+
+.list-move {
+    transition: all 1s;
+}
+
+</style>

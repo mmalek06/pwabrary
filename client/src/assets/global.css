@@ -1,6 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
 
+@font-face {
+    font-family: HyliaSerif;
+    src: url("HyliaSerifBeta-Regular.otf") format("opentype");
+}
+
 body {
-  font-family: 'Open Sans';
-  background: #ece6d9;
+    font-family: 'Open Sans';
+    background: #ece6d9;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 1s
+}
+
+.fade-enter,
+.fade-leave-to
+{
+    opacity: 0
+}
+
+h1 {
+    font-family: HyliaSerif;
+    letter-spacing: 4px;
 }
