@@ -17,7 +17,7 @@
 
 <script lang="ts">
 
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { AxiosKey } from '@/infrastructure/symbols';
 import injectStrict from '@/infrastructure/injection';
 import Book from '@/models/Book';
@@ -26,18 +26,19 @@ import BookListElement from './BookListElement.vue';
 export default defineComponent({
     name: 'BookList',
     components: { BookListElement },
-    data() {
-        return {
-            books: [] as Book[],
-            isLoading: true
-        };
-    },
-    async mounted() {
+    setup() {
+        const books = ref<Book[]>([]);
+        const isLoading = ref(true);
         const http = injectStrict(AxiosKey);
-        const response = await http.get<Book[]>('/library/list-stock');
+        
+        http
+            .get<Book[]>('/library/list-stock')
+            .then(response => {
+                isLoading.value = false;
+                books.value = response.data;
+            });
 
-        this.isLoading = false;
-        this.books = response.data;
+        return { books, isLoading };
     }
 });
 
@@ -87,11 +88,6 @@ export default defineComponent({
     padding: 16px;
     margin: 16px 0;
     border-radius: 4px;
-}
-
-.book-list h2 {
-    margin: 0 0 10px;
-    text-transform: capitalize;
 }
 
 .list-move {
