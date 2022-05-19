@@ -1,23 +1,22 @@
 <template>
     <div class="book-list">
-        <transition name="fade">
+        <Transition name="fade" mode="out-in">
             <div class="lds-dual-ring" v-if="isLoading"></div>
-        </transition>
-        <transition name="fade">
-            <div v-if="!isLoading" class="book-list">
-                <ul>
+            <div class="books-wrapper" v-else>
+                <TransitionGroup tag="ul" appear>
                     <li v-for="book in books" :key="book.isbn">
                         <BookListElement :book="book" />
                     </li>
-                </ul>
+                </TransitionGroup>
             </div>
-        </transition>
+        </Transition>
     </div>
 </template>
 
 <script lang="ts">
 
 import { defineComponent, ref } from 'vue';
+
 import { AxiosKey } from '@/infrastructure/symbols';
 import injectStrict from '@/infrastructure/injection';
 import Book from '@/models/Book';
@@ -50,6 +49,10 @@ export default defineComponent({
     display: inline-block;
     width: 80px;
     height: 80px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
 }
 
 .lds-dual-ring:after {
@@ -74,12 +77,21 @@ export default defineComponent({
 }
 
 .book-list {
-    max-width: 960px;
-    margin: 40px auto;
+    display: grid;
+    place-items: baseline center;
+    grid-template-areas: "inner-div";
+}
+
+.books-wrapper {
+    width: 100%;
+}
+
+.book-list > * {
+    grid-area: inner-div;
 }
 
 .book-list ul {
-    padding: 0
+    padding: 0;
 }
 
 .book-list li {
@@ -88,10 +100,6 @@ export default defineComponent({
     padding: 16px;
     margin: 16px 0;
     border-radius: 4px;
-}
-
-.list-move {
-    transition: all 1s;
 }
 
 </style>

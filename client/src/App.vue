@@ -1,6 +1,11 @@
 <template>
     <div class="app">
-        <BookList />
+        <header>
+            <h1>VUE Library</h1>
+        </header>
+        <div>
+            <BookList />
+        </div>
     </div>
     <!-- <nav>
         <router-link to="/">Home</router-link> |
@@ -21,3 +26,14 @@ export default defineComponent({
 });
 
 </script>
+
+<style scoped>
+
+.app {
+    max-width: 1080px;
+    max-width: 960px;
+    min-height: 80px;
+    margin: 40px auto;
+}
+
+</style>
