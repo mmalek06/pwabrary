@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+@import 'transitions.css';
+@import 'tooltip.css';
+@import 'buttons.css';
 
 @font-face {
     font-family: RobotoRegular;
@@ -25,18 +28,6 @@ body {
     background: #ece6d9;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-    transform: translateY(20px);
-}
-.fade-enter-active {
-    transition: all 1s ease;
-}
-.fade-leave-active {
-    transition: all 1s ease;
-}
-
 h1 {
     font-family: RobotoBold;
     letter-spacing: 4px;
@@ -45,31 +36,4 @@ h1 {
 h2 {
     font-family: RobotoMedium;
     letter-spacing: 2px;
-}
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-  
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    top: 100%;
-    left: 50%;
-    margin-left: -60px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 4px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    font-family: RobotoMedium;
-    font-size: smaller;
-    opacity: .7;
-}
-  
-.tooltip:hover .tooltiptext {
-    visibility: visible;
 }

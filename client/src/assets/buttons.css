@@ -1,0 +1,23 @@
+button.blue-big {
+    margin: 0;
+    color: #1195c9;
+    border: 3px solid #1195c9;
+    background: #d5f0ff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: RobotoMedium;
+}
+
+button.blue-big.disabled {
+    cursor: default !important;
+    pointer-events: unset !important;
+    color: #1195c9;
+    border: none;
+    padding: 11px 19px;
+    opacity: .5;
+}
+
+button.blue-big:hover:not(.disabled) {
+    border: 3px solid #d5f0ff;
+}

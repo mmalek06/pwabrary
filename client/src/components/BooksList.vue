@@ -1,6 +1,6 @@
 <template>
     <div class="book-list">
-        <Transition name="fade" mode="out-in">
+        <Transition name="switch" mode="out-in">
             <div class="lds-dual-ring" v-if="isLoading"></div>
             <div class="books-wrapper" v-else>
                 <TransitionGroup tag="ul" appear>
@@ -19,6 +19,7 @@ import { defineComponent, ref } from 'vue';
 
 import { AxiosKey } from '@/infrastructure/symbols';
 import injectStrict from '@/infrastructure/injection';
+import BookVM from '@/viewmodels/BookVM';
 import Book from '@/models/Book';
 import BookListElement from './BookListElement.vue';
 
@@ -26,7 +27,7 @@ export default defineComponent({
     name: 'BookList',
     components: { BookListElement },
     setup() {
-        const books = ref<Book[]>([]);
+        const books = ref<BookVM[]>([]);
         const isLoading = ref(true);
         const http = injectStrict(AxiosKey);
         
@@ -34,7 +35,7 @@ export default defineComponent({
             .get<Book[]>('/library/list-stock')
             .then(response => {
                 isLoading.value = false;
-                books.value = response.data;
+                books.value = response.data.map(b => new BookVM(b));
             });
 
         return { books, isLoading };
