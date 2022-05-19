@@ -11,9 +11,9 @@
     <p class="authors">
         <span v-for="author in book.authors" :key="author.identifier">{{ author.name }}</span>
     </p>
-    <Modal :open="isModalOpen" @close="isModalOpen = !isModalOpen">
+    <Modal :open="isModalOpen" :closeButtonText="'Borrow book'" @close="onClose">
         <form class="borrow-book-form">
-            <input type="text" placeholder="Type in your name here..." />
+            <input type="text" placeholder="Type in your name here..." v-model="userName" />
         </form>
     </Modal>
 </template>
@@ -36,20 +36,26 @@ export default defineComponent({
             type: Object as PropType<BookVM>
         }
     },
-    setup() {
+    setup(props) {
         const http = injectStrict(AxiosKey);
         const isModalOpen = ref(false);
+        const userName = ref('');
         const onButtonClick = (book: BookVM) => {
             if (!book.isBorrowable)
                 return;
 
             isModalOpen.value = true;
+        };
+        const onClose = () => {
+            isModalOpen.value = !isModalOpen.value;
 
+            console.log(userName.value);
+            console.log(props.book);
             // http
             //     .post('/borrow-book')
-        };
+        }
 
-        return { isModalOpen, onButtonClick };
+        return { isModalOpen, userName, onButtonClick, onClose };
     }
 });
 
@@ -89,7 +95,7 @@ h2 {
     border-bottom-style: groove;
     background-color: #eee;
     outline: none;
-    width: 340px;
+    width: 305px;
     padding: 8px 16px;
 }
 

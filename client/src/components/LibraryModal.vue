@@ -5,7 +5,7 @@
                 <div class="modal-inner" v-show="open">
                     <div class="modal-content">
                         <slot />
-                        <button class="blue-big" type="button" @click="close">Close</button>
+                        <button class="blue-big" type="button" @click="close">{{ closeButtonText }}</button>
                     </div>
                 </div>
             </Transition>
@@ -23,6 +23,11 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        closeButtonText: {
+            type: String,
+            required: false,
+            default: 'Close'
+        }
     },
     setup(_, { emit }) {
         const close = () => {
