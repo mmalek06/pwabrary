@@ -1,12 +1,11 @@
 <template>
     <Transition name="fade" mode="out-in">
-        <div class="modal" v-show="open" @click.self="close">
+        <div class="modal" v-show="open" @click.self="close(false)">
             <Transition name="drop-in">
-                <div class="modal-inner" v-show="open">
-                    <div class="modal-content">
-                        <slot />
-                        <button class="blue-big" type="button" @click="close">{{ closeButtonText }}</button>
-                    </div>
+                <div class="modal-content" v-show="open">
+                    <slot />
+                    <button class="blue-big" type="button" @click="close(true)">{{ closeButtonText }}</button>
+                    <button class="blue-big" type="button" @click="close(false)">Cancel</button>
                 </div>
             </Transition>
         </div>
@@ -30,8 +29,8 @@ export default defineComponent({
         }
     },
     setup(_, { emit }) {
-        const close = () => {
-            emit('close');
+        const close = (isPerformingAction: boolean) => {
+            emit('close', isPerformingAction);
         };
 
         return { close };
@@ -62,12 +61,9 @@ export default defineComponent({
     z-index: 1;
 }
 
-.modal-inner {
-    max-width: 500px;
-    margin: 2rem auto;
-}
-
 .modal-content {
+    margin: 0 auto;
+    margin-top: 100px;
     position: relative;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.3);
@@ -75,8 +71,11 @@ export default defineComponent({
     border-radius: 0.3rem;
     padding: 1rem;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    width: fit-content;
+}
+
+.modal-content button {
+    margin-left: 15px;
 }
 
 </style>

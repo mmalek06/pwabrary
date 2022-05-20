@@ -12,15 +12,18 @@
         <span v-for="author in book.authors" :key="author.identifier">{{ author.name }}</span>
     </p>
     <Modal :open="isModalOpen" :closeButtonText="'Borrow book'" @close="onClose">
-        <form class="borrow-book-form">
-            <input type="text" placeholder="Type in your name here..." v-model="userName" />
-        </form>
+        <Form :validation-schema="schema" class="borrow-book-form">
+            <Field id="username" name="username" type="text" placeholder="Type in your name here..." v-model="userName" />
+            <ErrorMessage name="username" class="error-message" />
+        </Form>
     </Modal>
 </template>
 
 <script lang="ts">
 
 import { defineComponent, PropType, ref } from 'vue';
+import { Field, Form, ErrorMessage } from 'vee-validate';
+import * as Yup from 'yup';
 
 import Modal from '@/components/LibraryModal.vue';
 import injectStrict from '@/infrastructure/injection';
@@ -29,7 +32,7 @@ import BookVM from '@/viewmodels/BookVM';
 
 export default defineComponent({
     name: 'BookListElement',
-    components: { Modal },
+    components: { Modal, Field, Form, ErrorMessage },
     props: {
         book: {
             required: true,
@@ -40,22 +43,30 @@ export default defineComponent({
         const http = injectStrict(AxiosKey);
         const isModalOpen = ref(false);
         const userName = ref('');
+        const schema = Yup.object().shape({
+            username: Yup
+                .string()
+                .min(3, 'Your user name needs to be at least 3 characters long.')
+                .required('Field user name is required.')
+        });
         const onButtonClick = (book: BookVM) => {
             if (!book.isBorrowable)
                 return;
 
             isModalOpen.value = true;
         };
-        const onClose = () => {
+        const onClose = async (isPerformingAction: boolean) => {
             isModalOpen.value = !isModalOpen.value;
 
-            console.log(userName.value);
-            console.log(props.book);
-            // http
-            //     .post('/borrow-book')
-        }
+            if (!isPerformingAction)
+                return;
 
-        return { isModalOpen, userName, onButtonClick, onClose };
+            const response = await http.post(`/library/borrow-book?isbn=${props.book.isbn}&user-name=${userName.value}`);
+
+            console.log(response.data);
+        };
+
+        return { isModalOpen, userName, schema, onButtonClick, onClose };
     }
 });
 
@@ -97,6 +108,15 @@ h2 {
     outline: none;
     width: 305px;
     padding: 8px 16px;
+}
+
+input + span {
+    display: block;
+}
+
+.borrow-book-form .error-message {
+    width: 305px;
+    padding-top: 10px;
 }
 
 </style>

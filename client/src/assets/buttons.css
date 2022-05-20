@@ -7,6 +7,7 @@ button.blue-big {
     border-radius: 4px;
     cursor: pointer;
     font-family: RobotoMedium;
+    height: 40px;
 }
 
 button.blue-big.disabled {
