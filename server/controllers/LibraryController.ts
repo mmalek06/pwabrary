@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
+import { Get, Post, Route } from 'tsoa';
+import { ErrorCodes } from '../services/ErrorCodes';
 
 import IBookService from '../services/IBookService';
 import BaseController from './BaseController';
 
+@Route('api/library')
 export class LibraryController extends BaseController {
     constructor(
         private _bookService: IBookService,
@@ -11,6 +14,7 @@ export class LibraryController extends BaseController {
         super(res, req);
     }
 
+    @Get('author-books?author-name={authorName}')
     listAuthorBooks(authorName: string): void {
         if (authorName === '')
             this._parameterEmpty('author-name');
@@ -21,6 +25,7 @@ export class LibraryController extends BaseController {
         }
     }
 
+    @Get('find-book?book-title={bookTitle}')
     findBook(bookTitle: string): void {
         if (bookTitle === '') 
             this._parameterEmpty('book-title');
@@ -34,6 +39,7 @@ export class LibraryController extends BaseController {
         }
     }
 
+    @Post('borrow-book?isbn={isbn}&user-name={userName}')
     borrowBook(isbn: string, userName: string): void {
         if (isbn === '')
             this._parameterEmpty('isbn');
@@ -43,8 +49,8 @@ export class LibraryController extends BaseController {
             const bookOrError = this._bookService.borrowBook(isbn, userName);
             const type = typeof bookOrError as string;
 
-            if (type === 'ErrorCode')
-                this._objectNonExistent();
+            if (type === 'number')
+                this._serviceError(bookOrError as ErrorCodes);
             else
                 this._res
                     .status(200)
@@ -52,6 +58,7 @@ export class LibraryController extends BaseController {
         }
     }
 
+    @Post('return-book?isbn={isbn}&user-name={userName}')
     returnBook(isbn: string, userName: string): void {
         if (isbn === '')
             this._parameterEmpty('isbn');
@@ -72,6 +79,7 @@ export class LibraryController extends BaseController {
         }
     }
 
+    @Get('list-stock')
     listStock(): void {
         const books = this._bookService.getAllBooks();
 

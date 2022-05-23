@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ErrorCodes } from '../services/ErrorCodes';
 
 import { ControllerErrorCodes } from './ControllerErrorCodes';
 
@@ -9,7 +10,7 @@ export default abstract class BaseController {
         this._res
             .status(400)
             .json({
-                validationError: ControllerErrorCodes.PARAMETER_EMPTY,
+                technicalError: ControllerErrorCodes.PARAMETER_EMPTY,
                 parameter: paramName
             });
     }
@@ -18,7 +19,15 @@ export default abstract class BaseController {
         this._res
             .status(404)
             .json({
-                validationError: ControllerErrorCodes.OBJECT_NOT_EXISTING
+                technicalError: ControllerErrorCodes.OBJECT_NOT_EXISTING
+            });
+    }
+
+    protected _serviceError(error: ErrorCodes) {
+        this._res
+            .status(400)
+            .json({
+                validationError: error
             });
     }
 }
