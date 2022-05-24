@@ -13,7 +13,19 @@ export class BookService implements IBookService {
     }
 
     getAllBooks(): Book[] {
-        return this._books;
+        return this._books.map(b => {
+            const copiesBorrowed = this._borrowedBooks.has(b.isbn)
+                ? this._borrowedBooks.get(b.isbn)!.length
+                : 0;
+            const stock = b.stock - copiesBorrowed;
+
+            return {
+                isbn: b.isbn,
+                title: b.title,
+                authors: b.authors,
+                stock
+            };
+        });
     }
 
     findBook(maybeTitle: string): Book[] {

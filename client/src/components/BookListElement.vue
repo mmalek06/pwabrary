@@ -1,16 +1,23 @@
 <template>
-    <header class="book-title">
-        <h2>{{ book.title }}</h2>
-        <span class="tooltip">
-            <button :class="!book.isBorrowable ? 'blue-big disabled': 'blue-big'" @click="onButtonClick(book)">
-                Borrow this book (ISBN: {{ book.isbn }}, copies left: {{ book.stock }})
-            </button>
-            <span v-if="!book.isBorrowable" class="tooltiptext">This book is out of stock :(</span>
-        </span>
-    </header>
-    <p class="authors">
-        <span v-for="author in book.authors" :key="author.identifier">{{ author.name }}</span>
-    </p>
+    <div class="book-row">
+        <div>
+            <h2>{{ book.title }}</h2>
+            <p class="authors">
+                <span v-for="author in book.authors" :key="author.identifier">{{ author.name }}</span>
+            </p>
+        </div>
+        <div>
+            <div class="tooltip">
+                <button :class="!book.isBorrowable ? 'blue-big disabled': 'blue-big'" @click="onButtonClick(book)">
+                    Borrow this book (ISBN: {{ book.isbn }}, copies left: {{ book.stock }})
+                </button>
+                <span v-if="!book.isBorrowable" class="tooltiptext">This book is out of stock :(</span>
+            </div>
+            <div class="return-book">
+                <button class="green-big">Return this book</button>
+            </div>
+        </div>
+    </div>
     <Modal :open="isBorrowBookModalOpen" :closeButtonText="'Borrow book'" @close="onCloseBorrowBookModal">
         <Form :validation-schema="schema" class="borrow-book-form">
             <Field id="username" name="username" type="text" placeholder="Type in your name here..." v-model="userName" />
@@ -94,7 +101,7 @@ export default defineComponent({
 
 <style scoped>
 
-header {
+.book-row {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -137,6 +144,14 @@ input + span {
 .borrow-book-form .error-message {
     width: 305px;
     padding-top: 10px;
+}
+
+.return-book {
+    margin-top: 5px;
+}
+
+.return-book button {
+    width: 100%;
 }
 
 </style>

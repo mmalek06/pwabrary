@@ -81,6 +81,7 @@ export default defineComponent({
 
 .modal-content button {
     margin-left: 15px;
+    padding: 0 16px;
 }
 
 </style>
