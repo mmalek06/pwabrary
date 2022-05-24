@@ -5,7 +5,10 @@
             <div class="books-wrapper" v-else>
                 <TransitionGroup tag="ul" appear>
                     <li v-for="book in books" :key="book.isbn">
-                        <BookListElement :book="book" @bookBorrowed="onBookBorrowed" />
+                        <BookListElement 
+                            :book="book" 
+                            @bookBorrowed="onBookReturnedOrBorrowed" 
+                            @bookReturned="onBookReturnedOrBorrowed" />
                     </li>
                 </TransitionGroup>
             </div>
@@ -33,7 +36,7 @@ export default defineComponent({
         const http = injectStrict(AxiosKey);
         const getBooks = () => http.get<Book[]>('/library/list-stock');
         const mapBooks = (response: AxiosResponse<Book[], any>) => response.data.map(b => new BookVM(b));
-        const onBookBorrowed = async (book: Book) => {
+        const onBookReturnedOrBorrowed = async (book: Book) => {
             isLoading.value = true;
 
             const response = await getBooks();
@@ -48,7 +51,7 @@ export default defineComponent({
                 books.value = mapBooks(response);
             });
 
-        return { books, isLoading, onBookBorrowed };
+        return { books, isLoading, onBookReturnedOrBorrowed };
     }
 });
 

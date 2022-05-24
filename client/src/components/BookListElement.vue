@@ -7,99 +7,35 @@
             </p>
         </div>
         <div>
-            <div class="tooltip">
-                <button :class="!book.isBorrowable ? 'blue-big disabled': 'blue-big'" @click="onButtonClick(book)">
-                    Borrow this book (ISBN: {{ book.isbn }}, copies left: {{ book.stock }})
-                </button>
-                <span v-if="!book.isBorrowable" class="tooltiptext">This book is out of stock :(</span>
-            </div>
-            <div class="return-book">
-                <button class="green-big">Return this book</button>
-            </div>
+            <BorrowBook :book="book" v-bind="$attrs" />
+            <ReturnBook :book="book" v-bind="$attrs" />
         </div>
     </div>
-    <Modal :open="isBorrowBookModalOpen" :closeButtonText="'Borrow book'" @close="onCloseBorrowBookModal">
-        <Form :validation-schema="schema" class="borrow-book-form">
-            <Field id="username" name="username" type="text" placeholder="Type in your name here..." v-model="userName" />
-            <ErrorMessage name="username" class="error-message" />
-        </Form>
-    </Modal>
-    <Modal :open="isErrorModalOpen" :closeButtonText="'Ok'" :infoModal="true" @close="onCloseErrorModal">
-        <span>There are no copies of this book left to borrow.</span>
-    </Modal>
 </template>
 
 <script lang="ts">
 
-import { defineComponent, PropType, ref } from 'vue';
-import { Field, Form, ErrorMessage } from 'vee-validate';
-import * as Yup from 'yup';
+import { defineComponent, PropType } from 'vue';
 
-import Modal from '@/components/LibraryModal.vue';
-import injectStrict from '@/infrastructure/injection';
-import { AxiosKey } from '@/infrastructure/symbols';
+import BorrowBook from '@/components/BorrowBook.vue';
+import ReturnBook from '@/components/ReturnBook.vue';
 import BookVM from '@/viewmodels/BookVM';
 
 export default defineComponent({
     name: 'BookListElement',
-    components: { Modal, Field, Form, ErrorMessage },
-    emits: ['bookBorrowed'],
+    components: { BorrowBook, ReturnBook },
+    inheritAttrs: false,
     props: {
         book: {
             required: true,
             type: Object as PropType<BookVM>
         }
-    },
-    setup(props, { emit }) {
-        const http = injectStrict(AxiosKey);
-        const isBorrowBookModalOpen = ref(false);
-        const isErrorModalOpen = ref(false);
-        const userName = ref('');
-        const schema = Yup.object().shape({
-            username: Yup
-                .string()
-                .min(3, 'Your user name needs to be at least 3 characters long.')
-                .required('Field user name is required.')
-        });
-        const onButtonClick = (book: BookVM) => {
-            if (!book.isBorrowable)
-                return;
-
-            isBorrowBookModalOpen.value = true;
-        };
-        const onCloseBorrowBookModal = async (isPerformingAction: boolean) => {
-            isBorrowBookModalOpen.value = !isBorrowBookModalOpen.value;
-
-            if (!isPerformingAction)
-                return;
-
-            try {
-                const response = await http.post(`/library/borrow-book?isbn=${props.book.isbn}&user-name=${userName.value}`);
-
-                emit('bookBorrowed', response);
-            }
-            catch (error) {
-                isErrorModalOpen.value = !isErrorModalOpen.value;    
-            }
-        };
-        const onCloseErrorModal = () => {
-            isErrorModalOpen.value = !isErrorModalOpen.value;
-        };
-
-        return { 
-            isBorrowBookModalOpen, 
-            isErrorModalOpen, 
-            userName, 
-            schema, 
-            onButtonClick, 
-            onCloseBorrowBookModal,
-            onCloseErrorModal };
     }
 });
 
 </script>
 
-<style scoped>
+<style>
 
 .book-row {
     display: flex;
@@ -126,7 +62,7 @@ h2 {
     content: ", ";
 }
 
-.borrow-book-form input {
+.book-form input {
     border-top-style: hidden;
     border-right-style: hidden;
     border-left-style: hidden;
@@ -141,17 +77,9 @@ input + span {
     display: block;
 }
 
-.borrow-book-form .error-message {
+.book-form .error-message {
     width: 305px;
     padding-top: 10px;
-}
-
-.return-book {
-    margin-top: 5px;
-}
-
-.return-book button {
-    width: 100%;
 }
 
 </style>
