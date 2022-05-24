@@ -11,11 +11,14 @@
     <p class="authors">
         <span v-for="author in book.authors" :key="author.identifier">{{ author.name }}</span>
     </p>
-    <Modal :open="isModalOpen" :closeButtonText="'Borrow book'" @close="onClose">
+    <Modal :open="isBorrowBookModalOpen" :closeButtonText="'Borrow book'" @close="onCloseBorrowBookModal">
         <Form :validation-schema="schema" class="borrow-book-form">
             <Field id="username" name="username" type="text" placeholder="Type in your name here..." v-model="userName" />
             <ErrorMessage name="username" class="error-message" />
         </Form>
+    </Modal>
+    <Modal :open="isErrorModalOpen" :closeButtonText="'Ok'" :infoModal="true" @close="onCloseErrorModal">
+        <span>There are no copies of this book left to borrow.</span>
     </Modal>
 </template>
 
@@ -33,15 +36,17 @@ import BookVM from '@/viewmodels/BookVM';
 export default defineComponent({
     name: 'BookListElement',
     components: { Modal, Field, Form, ErrorMessage },
+    emits: ['bookBorrowed'],
     props: {
         book: {
             required: true,
             type: Object as PropType<BookVM>
         }
     },
-    setup(props) {
+    setup(props, { emit }) {
         const http = injectStrict(AxiosKey);
-        const isModalOpen = ref(false);
+        const isBorrowBookModalOpen = ref(false);
+        const isErrorModalOpen = ref(false);
         const userName = ref('');
         const schema = Yup.object().shape({
             username: Yup
@@ -53,20 +58,35 @@ export default defineComponent({
             if (!book.isBorrowable)
                 return;
 
-            isModalOpen.value = true;
+            isBorrowBookModalOpen.value = true;
         };
-        const onClose = async (isPerformingAction: boolean) => {
-            isModalOpen.value = !isModalOpen.value;
+        const onCloseBorrowBookModal = async (isPerformingAction: boolean) => {
+            isBorrowBookModalOpen.value = !isBorrowBookModalOpen.value;
 
             if (!isPerformingAction)
                 return;
 
-            const response = await http.post(`/library/borrow-book?isbn=${props.book.isbn}&user-name=${userName.value}`);
+            try {
+                const response = await http.post(`/library/borrow-book?isbn=${props.book.isbn}&user-name=${userName.value}`);
 
-            console.log(response.data);
+                emit('bookBorrowed', response);
+            }
+            catch (error) {
+                isErrorModalOpen.value = !isErrorModalOpen.value;    
+            }
+        };
+        const onCloseErrorModal = () => {
+            isErrorModalOpen.value = !isErrorModalOpen.value;
         };
 
-        return { isModalOpen, userName, schema, onButtonClick, onClose };
+        return { 
+            isBorrowBookModalOpen, 
+            isErrorModalOpen, 
+            userName, 
+            schema, 
+            onButtonClick, 
+            onCloseBorrowBookModal,
+            onCloseErrorModal };
     }
 });
 

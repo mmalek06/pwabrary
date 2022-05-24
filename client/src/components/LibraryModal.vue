@@ -4,8 +4,9 @@
             <Transition name="drop-in">
                 <div class="modal-content" v-show="open">
                     <slot />
-                    <button class="blue-big" type="button" @click="close(true)">{{ closeButtonText }}</button>
-                    <button class="blue-big" type="button" @click="close(false)">Cancel</button>
+                    <button class="blue-big" type="button" @click="close(true)" v-if="!infoModal">{{ closeButtonText }}</button>
+                    <button class="blue-big" type="button" @click="close(false)" v-if="!infoModal">Cancel</button>
+                    <button class="blue-big" type="button" @click="close(true)" v-if="infoModal">{{ closeButtonText }}</button>
                 </div>
             </Transition>
         </div>
@@ -26,6 +27,10 @@ export default defineComponent({
             type: String,
             required: false,
             default: 'Close'
+        },
+        infoModal: {
+            type: Boolean,
+            default: false
         }
     },
     setup(_, { emit }) {
