@@ -77,7 +77,7 @@ export class BookService implements IBookService {
         return book
     }
 
-    returnBook(isbn: string, userName: string): void | ErrorCodes {
+    returnBook(isbn: string, userName: string): undefined | ErrorCodes {
         const book = this._books.find(b => b.isbn == isbn);
 
         if (!this._borrowedBooks.has(isbn))

@@ -2,14 +2,14 @@
     <div class="return-book">
         <button class="green-big" @click="onClick(book)">Return this book</button>
     </div>
-    <Modal :open="isModalOpen" :closeButtonText="'Return book'" @close="onCloseModal">
+    <Modal :open="isModalOpen" :closeButtonText="'Return book'" @close="onCloseReturnBookModal">
         <Form :validation-schema="schema" class="book-form">
             <Field id="username" name="username" type="text" placeholder="Type in your name here..." v-model="userName" />
             <ErrorMessage name="username" class="error-message" />
         </Form>
     </Modal>
-    <Modal :open="isErrorModalOpen" :closeButtonText="'Ok'" :infoModal="true" @close="onCloseModal">
-        <span>This book has not been borrowed by .</span>
+    <Modal :open="isErrorModalOpen" :closeButtonText="'Ok'" :infoModal="true" @close="onCloseErrorModal">
+        <span>This book has not been borrowed by {{ userName }}.</span>
     </Modal>
 </template>
 
@@ -49,8 +49,8 @@ export default defineComponent({
         const onClick = (book: BookVM) => {
             isModalOpen.value = true;
         };
-        const onCloseModal = async (isPerformingAction: boolean) => {
-            isModalOpen.value = !isModalOpen.value;
+        const onCloseReturnBookModal = async (isPerformingAction: boolean) => {
+            isModalOpen.value = false;
 
             if (!isPerformingAction)
                 return;
@@ -61,8 +61,11 @@ export default defineComponent({
                 emit('bookReturned', response);
             }
             catch (error) {
-                isErrorModalOpen.value = !isErrorModalOpen.value;    
+                isErrorModalOpen.value = true;
             }
+        };
+        const onCloseErrorModal = (_: boolean) => {
+            isErrorModalOpen.value = false;
         };
 
         return { 
@@ -71,7 +74,8 @@ export default defineComponent({
             userName, 
             schema,
             onClick,
-            onCloseModal
+            onCloseReturnBookModal,
+            onCloseErrorModal
         };
     }
 });

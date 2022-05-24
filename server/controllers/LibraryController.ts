@@ -68,8 +68,8 @@ export class LibraryController extends BaseController {
             const voidOrError = this._bookService.returnBook(isbn, userName);
             const type = typeof voidOrError as string;
 
-            if (type !== 'ErrorCode')
-                this._res.status(200);
+            if (type !== 'number')
+                this._res.status(200).json({});
             else
                 this._res
                     .status(400)

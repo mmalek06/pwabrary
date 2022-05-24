@@ -3,13 +3,15 @@
         <Transition name="switch" mode="out-in">
             <div class="lds-dual-ring" v-if="isLoading"></div>
             <div class="books-wrapper" v-else>
-                <TransitionGroup tag="ul" appear>
-                    <li v-for="book in books" :key="book.isbn">
-                        <BookListElement 
-                            :book="book" 
-                            @bookBorrowed="onBookReturnedOrBorrowed" 
-                            @bookReturned="onBookReturnedOrBorrowed" />
-                    </li>
+                <TransitionGroup appear>
+                    <ul :key="'list'">
+                        <li v-for="book in books" :key="book.isbn">
+                            <BookListElement 
+                                :book="book" 
+                                @bookBorrowed="onBookReturnedOrBorrowed" 
+                                @bookReturned="onBookReturnedOrBorrowed" />
+                        </li>
+                    </ul>
                 </TransitionGroup>
             </div>
         </Transition>

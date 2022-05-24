@@ -11,7 +11,7 @@
             <ErrorMessage name="username" class="error-message" />
         </Form>
     </Modal>
-    <Modal :open="isErrorModalOpen" :closeButtonText="'Ok'" :infoModal="true" @close="onCloseModal">
+    <Modal :open="isErrorModalOpen" :closeButtonText="'Ok'" :infoModal="true" @close="onCloseErrorModal">
         <span>There are no copies of this book left to borrow.</span>
     </Modal>
 </template>
@@ -56,7 +56,7 @@ export default defineComponent({
             isModalOpen.value = true;
         };
         const onCloseModal = async (isPerformingAction: boolean) => {
-            isModalOpen.value = !isModalOpen.value;
+            isModalOpen.value = false;
 
             if (!isPerformingAction)
                 return;
@@ -67,8 +67,11 @@ export default defineComponent({
                 emit('bookBorrowed', response);
             }
             catch (error) {
-                isErrorModalOpen.value = !isErrorModalOpen.value;    
+                isErrorModalOpen.value = true;
             }
+        };
+        const onCloseErrorModal = (_: boolean) => {
+            isErrorModalOpen.value = false;
         };
 
         return { 
@@ -77,7 +80,8 @@ export default defineComponent({
             userName, 
             schema,
             onClick,
-            onCloseModal
+            onCloseModal,
+            onCloseErrorModal
         };
     }
 });
