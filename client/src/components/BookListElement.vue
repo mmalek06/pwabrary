@@ -62,18 +62,7 @@ h2 {
     content: ", ";
 }
 
-.book-form input {
-    border-top-style: hidden;
-    border-right-style: hidden;
-    border-left-style: hidden;
-    border-bottom-style: groove;
-    background-color: #eee;
-    outline: none;
-    width: 305px;
-    padding: 8px 16px;
-}
-
-input + span {
+form input + span {
     display: block;
 }
 

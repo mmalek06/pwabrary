@@ -2,6 +2,7 @@
 @import 'transitions.css';
 @import 'tooltip.css';
 @import 'buttons.css';
+@import 'inputs.css';
 @import 'errors.css';
 
 @font-face {
